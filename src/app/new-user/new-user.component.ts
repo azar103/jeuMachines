@@ -32,7 +32,7 @@ export class NewUserComponent implements OnInit {
 
   onSubmitForm() {
    const formValue = this.userForm.value;
-   const newUser = new User(formValue['firsName'],
+   const newUser = new User(formValue['firstName'],
                              formValue['lastName'],
                              formValue['email'],
                              formValue['drinkPreferences'],
