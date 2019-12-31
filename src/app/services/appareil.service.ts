@@ -1,26 +1,12 @@
 import { Subject } from 'rxjs';
-
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+@Injectable()
 export class AppareilService {
-  private appareils = [
-  {
-    id: 1,
-    name: 'Machine à laver',
-    status: 'allumé'
-  },
-  {
-    id: 2,
-    name: 'Frigo',
-    status: 'allumé'
-  },
-  {
-    id: 3,
-    name: 'Ordinateur',
-    status: 'éteint'
-  }
-];
-
+  private appareils = [];
+constructor(private httpClient: HttpClient) {}
 appareilsSubject = new Subject<any[]>();
-emitAppareilsSubject(){
+emitAppareilsSubject() {
   this.appareilsSubject.next(this.appareils.slice());
 }
 switchOnAll() {
@@ -60,5 +46,33 @@ addAppareil(name: string, status: string) {
  this.appareils.push(appareilObject);
  this.emitAppareilsSubject();
 }
+saveAppareilsToServer() {
+  this.httpClient.put('https://http-client-demo-bdfd7.firebaseio.com/appareils.json', this.appareils)
+                 .subscribe(
+                   () => {
+                     console.log('Enregistrement terminé');
+                   },
+                   (error) => {
+                     console.log('Erreur ! ' + error);
+                   }
+                 )
+  ;
+}
+
+getAppareilsFromServer() {
+  this.httpClient.get<any[]>('https://http-client-demo-bdfd7.firebaseio.com/appareils.json')
+                 .subscribe(
+                   (response) => {
+                       this.appareils = response;
+                       this.emitAppareilsSubject();
+                   },
+                   (error) => {
+                     console.log('Erreur de chargement !'+ error);
+                   }
+                 );
+
+
+}
+
 
 }
